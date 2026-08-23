@@ -1,0 +1,291 @@
+@import "tailwindcss";
+
+/* Theme is driven by a .dark class on <html> so the toggle works independently
+   of the OS setting; every colour below is a semantic token, so components
+   never need dark: variants. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-warm: var(--warm);
+  --color-online: var(--online);
+  --color-danger: var(--danger);
+
+  --font-sans: "Inter var", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+
+  --radius-card: 18px;
+
+  --animate-rise: rise 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-fade: fade 0.2s ease-out;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-pop: pop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+:root {
+  /* The mobile tab bar's real height. Anything that has to sit exactly on top
+     of it — page padding, the full-screen Reels and Messages views — measures
+     from here, so the bar and the space reserved for it can never drift. */
+  --tabbar-h: calc(2.75rem + env(safe-area-inset-bottom));
+
+  /* Width the Reels page gives up when the comments column is open, so the
+     video moves aside instead of being covered. */
+  --reel-comments-w: 23rem;
+
+  --bg: #fbfaf9;
+  --surface: #ffffff;
+  --raised: #f3f2ef;
+  --line: #e6e3de;
+  --fg: #15151a;
+  --muted: #6b6b78;
+  --faint: #9a9aa6;
+  --accent: #6d4aff;
+  --accent-soft: #efeaff;
+  --warm: #ff7a59;
+  --online: #22c07a;
+  --danger: #e5484d;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0a0a0c;
+  --surface: #131318;
+  --raised: #1d1d24;
+  --line: #2a2a33;
+  --fg: #f3f3f6;
+  --muted: #9494a2;
+  --faint: #6b6b78;
+  --accent: #8b6dff;
+  --accent-soft: #221a45;
+  --warm: #ff8a6b;
+  --online: #2fd18a;
+  --danger: #ff6369;
+  color-scheme: dark;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 28%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+  /* iOS zooms in on focus for inputs under 16px */
+  @media (max-width: 767px) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
+  img {
+    -webkit-user-drag: none;
+  }
+}
+
+@layer components {
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.5rem 1.1rem;
+    transition: transform 0.14s ease, background-color 0.16s ease, opacity 0.16s ease, border-color 0.16s ease;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:active:not(:disabled) {
+    transform: scale(0.965);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--accent) 88%, #fff);
+  }
+  .btn-ghost {
+    background: var(--raised);
+    color: var(--fg);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--raised) 85%, var(--fg));
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--line);
+  }
+  .btn-outline:hover:not(:disabled) {
+    background: var(--raised);
+  }
+  .btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid color-mix(in oklab, var(--danger) 40%, transparent);
+  }
+  .btn-danger:hover:not(:disabled) {
+    background: color-mix(in oklab, var(--danger) 12%, transparent);
+  }
+
+  .field {
+    width: 100%;
+    background: var(--raised);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9375rem;
+    transition: border-color 0.16s ease, background-color 0.16s ease;
+  }
+  .field::placeholder {
+    color: var(--faint);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+  .field-error {
+    border-color: var(--danger);
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--raised) 25%,
+      color-mix(in oklab, var(--raised) 60%, var(--line)) 37%,
+      var(--raised) 63%
+    );
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+    border-radius: 8px;
+  }
+
+  .story-ring {
+    background: conic-gradient(from 210deg, var(--warm), var(--accent), #4bc8ff, var(--warm));
+  }
+
+  .wordmark {
+    font-weight: 700;
+    letter-spacing: -0.045em;
+  }
+
+  .hide-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hide-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .press {
+    transition: transform 0.14s ease;
+  }
+  .press:active {
+    transform: scale(0.94);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/**
+ * The opened-post layout.
+ *
+ * The media column is sized from the media's own aspect ratio rather than a
+ * fixed fraction of the card: a fraction leaves a slab of dead background
+ * beside anything portrait, because the picture letterboxes inside a column far
+ * wider than it needs. Width comes from the height the card is allowed, so the
+ * frame ends exactly where the picture does and the comments sit against it.
+ */
+@media (min-width: 1024px) {
+  .post-layout {
+    display: grid;
+    --post-media-h: min(80vh, 44rem);
+    /* The media column is exactly as wide as the picture is tall times its
+       shape, capped so an extremely wide photo cannot crowd out the comments.
+       The card itself shrinks to those two columns rather than stretching, so
+       there is no leftover width to show as background on either side. */
+    grid-template-columns:
+      min(calc(var(--post-media-h) * var(--post-media-ratio, 1)), 46rem)
+      minmax(21rem, 24rem);
+    width: fit-content;
+    margin-inline: auto;
+  }
+
+  /* A very wide photo would otherwise make the whole card squat. */
+  .post-layout > * {
+    min-height: 26rem;
+  }
+}

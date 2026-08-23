@@ -1,0 +1,12 @@
+node_modules/
+data/
+web/dist/
+.run/
+*.log
+.DS_Store
+
+# secrets
+server/.env
+
+# build artefacts
+*.tsbuildinfo
